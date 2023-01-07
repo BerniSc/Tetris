@@ -17,12 +17,9 @@ struct tetromino_factory {
 
         void generateNewTetromino(const int block_symbol_number, const std::pair<int, int> start_point, const int start_rotation, int shape_id);
 
-
         tetromino & getCurrentTetromino(); 
 
-        void moveDown() {
-            getCurrentTetromino().moveDown(factoryBoard);
-        }
+        void draw();
 };
 
 #endif

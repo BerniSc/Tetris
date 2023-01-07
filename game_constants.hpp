@@ -2,6 +2,7 @@
 #define GAME_CONSTANTS_HPP
 
 #include <vector>
+#include <chrono>
 
 namespace game_constants {
     constexpr inline int board_height = 10;
@@ -12,6 +13,9 @@ namespace game_constants {
     constexpr inline char empty_boardblock = '.';
 
     constexpr inline char falling_tetromino_block = '@';
+
+    constexpr inline std::chrono::milliseconds wait_time = std::chrono::milliseconds(250);
+    constexpr inline int falltime_factor = 10; 
 }
 
 namespace tetromino_shapes {

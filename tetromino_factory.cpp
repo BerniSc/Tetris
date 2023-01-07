@@ -16,3 +16,7 @@ tetromino_factory::tetromino_factory(char (&factoryBoard)[game_constants::board_
 tetromino_factory::~tetromino_factory() {
     if(currentTetromino != nullptr) delete currentTetromino;
 }
+
+void tetromino_factory::draw() {
+    this->getCurrentTetromino().drawTetromino(this->factoryBoard);
+}
