@@ -18,6 +18,9 @@
 
 void initialize_board(char (&board)[game_constants::board_width][game_constants::board_height]);
 
+void removeCompletedRows(char (&board)[game_constants::board_width][game_constants::board_height]);
+void shiftGameBoardDown(int const indexStart, char (&board)[game_constants::board_width][game_constants::board_height]);
+
 char getCharWithoutEnter();
 
 int getRandNumber(int const max);

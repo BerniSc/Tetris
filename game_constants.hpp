@@ -6,7 +6,7 @@
 
 namespace game_constants {
     constexpr inline int board_height = 10;
-    constexpr inline int board_width = 40;
+    constexpr inline int board_width = 8;
 
     constexpr inline char tetromino_blocks[] = {'#', 'O', '0', 'o', '@'};
 

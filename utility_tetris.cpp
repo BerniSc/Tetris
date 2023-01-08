@@ -41,3 +41,31 @@ int getRandNumber(int const max) {
 
     return distribute(generator);
 }
+
+void shiftGameBoardDown(int const indexStart, char (&board)[game_constants::board_width][game_constants::board_height]) {
+    for(int row = indexStart; row >= 1; row--) {
+        for(int x = 0; x < game_constants::board_width; x++) {
+            //from bottom to top removes the risk of overwriting important values, as row thats beeing overwritten is to be cleared
+            board[x][row] = board[x][row - 1];
+        }
+    }
+}
+
+void removeCompletedRows(char (&board)[game_constants::board_width][game_constants::board_height]) {
+    //Check every Row for completion, start with bottom as shifting rows down is easier
+    for(int row = game_constants::board_height - 1; row >= 0; row--) {
+        bool completeRow = true;
+        //iterate over every "column" in the current row -> if element not occupied set complete row to false and break;
+        for(int x = 0; x < game_constants::board_width; x++) {
+            if(board[x][row] == game_constants::empty_boardblock) {
+                completeRow = false;
+                break;
+            }
+        }
+        if(completeRow) {
+            shiftGameBoardDown(row, board);
+            //Repeat Check for new Row
+            row++;
+        }
+    }
+}

@@ -10,14 +10,24 @@ class Tetris_Exception {
         const std::string message;
     public:
         Tetris_Exception(std::string msg);
+
+        std::string const print_what() const;
 };
 
 class Tetromino_Stuck : public Tetris_Exception {
+    protected:
+        static int placed_tetrominos;
     public:
+        int const getPlacedTetrominos();
+
         Tetromino_Stuck();
         Tetromino_Stuck(std::string msg);
+};
 
-        std::string const print_what() const;
+class Game_Over : public Tetris_Exception {
+    public:
+        Game_Over();
+        Game_Over(std::string msg);
 };
 
 #endif

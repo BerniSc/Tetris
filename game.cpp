@@ -21,7 +21,27 @@ static char input = ' ';
 static mutex stopMutex;
 static bool stop;
 
+//Sort Of Beautified Version of the Output
 void print_board(const char (&board)[game_constants::board_width][game_constants::board_height]) {
+    //clear terminal
+    cout << "\033[2J\033[1;1H";
+    cout << "\t\t\t  +";
+    for(int i = 0; i < game_constants::board_width; i++) cout << "=";
+    cout << "+" << endl;
+    for(int y = 0; y < game_constants::board_height; y++) {
+        cout << "\t\t\t = ";
+        for(int x = 0; x < game_constants::board_width; x++) {
+            cout << board[x][y];
+        }
+        cout << " = " << endl;
+    }
+    cout << "\t\t\t  +";
+    for(int i = 0; i < game_constants::board_width; i++) cout << "=";
+    cout << "+" << endl;
+}
+
+//Barebone print of the GameBoard
+void print_board_2(const char (&board)[game_constants::board_width][game_constants::board_height]) {
     //clear terminal
     cout << "\033[2J\033[1;1H";
     for(int y = 0; y < game_constants::board_height; y++) {
@@ -106,6 +126,7 @@ int main() {
                     break;
                 } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
                     //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
+                    removeCompletedRows(gameBoard);
                     factory->generateNewRandomTetromino();
                     factory->getCurrentTetromino().drawTetromino(gameBoard);
                     print_board(gameBoard);
@@ -145,11 +166,13 @@ int main() {
             if(dropdownCounter == game_constants::falltime_factor) {
                 dropdownCounter = 0;
                 factory->getCurrentTetromino().moveDown(gameBoard);
-                //factory->getCurrentTetromino().drawTetromino(gameBoard);
-                //print_board(gameBoard);
+                factory->getCurrentTetromino().drawTetromino(gameBoard);
+                print_board(gameBoard);
             }
         } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
             //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
+            //ADD TRY FOR GAME OVER TODO
+            removeCompletedRows(gameBoard);
             factory->generateNewRandomTetromino();
             factory->getCurrentTetromino().drawTetromino(gameBoard);
             print_board(gameBoard);
