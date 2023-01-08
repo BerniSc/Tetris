@@ -9,16 +9,17 @@
 #include "tetromino_factory.hpp"
 #include "game_constants.hpp"
 #include "utility_tetris.hpp"
+#include "tetris_exception.hpp"
 
 using namespace std;
 
 char gameBoard[game_constants::board_width][game_constants::board_height];
 
-mutex inputMutex;
-char input = ' ';
+static mutex inputMutex;
+static char input = ' ';
 
-mutex stopMutex;
-bool stop;
+static mutex stopMutex;
+static bool stop;
 
 void print_board(const char (&board)[game_constants::board_width][game_constants::board_height]) {
     //clear terminal
@@ -97,11 +98,19 @@ int main() {
                 input = ' ';
                 break;
             case 's' :
-                factory->getCurrentTetromino().moveDown(gameBoard);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
-                print_board(gameBoard);
-                input = ' ';
-                break;
+                try {
+                    factory->getCurrentTetromino().moveDown(gameBoard);
+                    factory->getCurrentTetromino().drawTetromino(gameBoard);
+                    print_board(gameBoard);
+                    input = ' ';
+                    break;
+                } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
+                    //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
+                    factory->generateNewRandomTetromino();
+                    factory->getCurrentTetromino().drawTetromino(gameBoard);
+                    print_board(gameBoard);
+                    break;
+                }
             case 'w' :
                 factory->getCurrentTetromino().moveUpDebug(gameBoard);
                 factory->getCurrentTetromino().drawTetromino(gameBoard);
@@ -132,11 +141,20 @@ int main() {
         }
         waitThread.join();
         dropdownCounter++;
-        if(dropdownCounter == game_constants::falltime_factor) {
-            dropdownCounter = 0;
-            factory->getCurrentTetromino().moveDown(gameBoard);
+        try {
+            if(dropdownCounter == game_constants::falltime_factor) {
+                dropdownCounter = 0;
+                factory->getCurrentTetromino().moveDown(gameBoard);
+                //factory->getCurrentTetromino().drawTetromino(gameBoard);
+                //print_board(gameBoard);
+            }
+        } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
+            //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
+            factory->generateNewRandomTetromino();
             factory->getCurrentTetromino().drawTetromino(gameBoard);
             print_board(gameBoard);
+            //cout << tetromino_stuck_exp.print_what();
+            //this_thread::sleep_for(2s);
         }
     }
 

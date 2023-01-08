@@ -6,16 +6,18 @@
 
 namespace game_constants {
     constexpr inline int board_height = 10;
-    constexpr inline int board_width = 10;
+    constexpr inline int board_width = 40;
 
-    constexpr inline char tetromino_blocks[] = {'#', 'O', '0', 'o'};
+    constexpr inline char tetromino_blocks[] = {'#', 'O', '0', 'o', '@'};
 
     constexpr inline char empty_boardblock = '.';
 
-    constexpr inline char falling_tetromino_block = '@';
+    //constexpr inline char falling_tetromino_block = '@';
 
-    constexpr inline std::chrono::milliseconds wait_time = std::chrono::milliseconds(250);
-    constexpr inline int falltime_factor = 10; 
+    //Wait TIme is number of possible inputs during one "Tick" -> one Tick is Wait Time times factor
+    //Standard is 250, 10
+    constexpr inline std::chrono::milliseconds wait_time = std::chrono::milliseconds(125);
+    constexpr inline int falltime_factor = 20; 
 }
 
 namespace tetromino_shapes {

@@ -3,6 +3,8 @@
 
 #include "tetromino.hpp"
 #include "game_constants.hpp"
+#include "tetris_exception.hpp"
+#include "utility_tetris.hpp"
 
 struct tetromino;
 
@@ -16,6 +18,8 @@ struct tetromino_factory {
         virtual ~tetromino_factory();
 
         void generateNewTetromino(const int block_symbol_number, const std::pair<int, int> start_point, const int start_rotation, int shape_id);
+
+        void generateNewRandomTetromino();
 
         tetromino & getCurrentTetromino(); 
 

@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "game_constants.hpp"
+#include "tetris_exception.hpp"
 
 class tetromino {
     protected:

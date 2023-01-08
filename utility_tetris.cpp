@@ -6,8 +6,6 @@ void initialize_board(char (&board)[game_constants::board_width][game_constants:
             board[x][y] = game_constants::empty_boardblock;
         }
     }
-    board[4][1] = 'a';
-    board[4][3] = 'a';
 }
 
 //Get input without enter
@@ -32,4 +30,14 @@ char getCharWithoutEnter() {
     if(tcsetattr(0, TCSADRAIN, &old) < 0) perror("tcsetattr ~ICANON");
     //return Char
     return buffer;
+}
+
+int getRandNumber(int const max) {
+    std::random_device seed_gen;
+    const uint_least32_t seed = seed_gen();
+
+    std::mt19937 generator(seed);
+    std::uniform_int_distribution<uint_least32_t> distribute(0, max);
+
+    return distribute(generator);
 }

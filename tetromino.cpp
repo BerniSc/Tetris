@@ -89,13 +89,15 @@ bool tetromino::checkDown(char (&board)[game_constants::board_width][game_consta
     }
     */
    //cout << *this << endl;
-    for(int y = this->height - 1; y >= 0; y--) {
-        for(int x = 0; x < this->shape[y].size(); x++) {
+    for(int x = 0; x < this->width; x++) {
+        for(int y = this->height - 1; y >= 0; y--) {
             //cout << "X=" << x << "|" << this->shape[y].size() << "  " << "Y=" << y << endl;
             //changed x and y
+            //if(this->width >= shape[y].size()) break;
+
             if(this->shape[y][x]) {
-                if(board[this->getX() + x][this->getY() + y + 1] != game_constants::empty_boardblock && board[this->getX() + x][this->getY() + y + 1] != this->getSymbol()) return false;
-                //break;
+                if(board[this->getX() + x][this->getY() + y + 1] != game_constants::empty_boardblock) return false;
+                break;
             }
         }
     }
@@ -106,6 +108,8 @@ void tetromino::moveDown(char (&board)[game_constants::board_width][game_constan
     if(checkDown(board)) {
         drawTetromino(board, true);
         this->top_point.second++; 
+    } else {
+        throw Tetromino_Stuck();
     }
 }
 
