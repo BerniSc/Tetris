@@ -14,8 +14,14 @@ void tetromino_factory::generateNewRandomTetromino() {
     int block_symbol_number = getRandNumber(4);
     int start_rotation = getRandNumber(3);
     int shape_id = getRandNumber(4);
-
+    
     this->currentTetromino = new tetromino(game_constants::tetromino_blocks[block_symbol_number], std::pair<int, int>(game_constants::board_width / 2, 0), start_rotation, shape_id);
+    
+    for(int y = 0; y < this->getCurrentTetromino().getHeight(); y++) {
+        for(int x = 0; x < this->getCurrentTetromino().getSingleLineWidth(y); x++) {
+            if(this->factoryBoard[game_constants::board_width / 2 + x][y] != game_constants::empty_boardblock && getCurrentTetromino().checkShape(x, y)) throw(Game_Over("Game Over in Random Placement!!"));
+        }
+    }
 }
 
 tetromino_factory::tetromino_factory(char (&factoryBoard)[game_constants::board_width][game_constants::board_height]) : factoryBoard(factoryBoard) {

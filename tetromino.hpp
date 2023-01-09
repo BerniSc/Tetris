@@ -37,8 +37,15 @@ class tetromino {
 
 
         char getSymbol();
+        
         int getX();
         int getY();
+
+        int getHeight();
+        int getWidth();
+        int getSingleLineWidth(int line);
+
+        bool checkShape(int x, int y);
 
         void drawTetromino(char (&board)[game_constants::board_width][game_constants::board_height], bool clear = false);
 

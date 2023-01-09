@@ -87,7 +87,7 @@ int main() {
 
     unique_ptr<tetromino_factory> factory(new tetromino_factory(gameBoard));
     
-    factory->generateNewTetromino(1, pair<int, int>(3, 2), 0, 4);
+    factory->generateNewTetromino(1, pair<int, int>(3, 2), 0, 1);
     factory->getCurrentTetromino().drawTetromino(gameBoard);
     print_board(gameBoard);
 
@@ -139,10 +139,16 @@ int main() {
                 input = ' ';
                 break;
             case 'r' :
-                factory->getCurrentTetromino().rotateChecked(gameBoard);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
-                print_board(gameBoard);
-                input = ' ';
+                try {
+                    factory->getCurrentTetromino().rotateChecked(gameBoard);
+                    factory->getCurrentTetromino().drawTetromino(gameBoard);
+                    print_board(gameBoard);
+                    input = ' ';
+                    break;
+                } catch(Tetris_Rotation_Bounds &rotation_exp) {
+                    cout << rotation_exp.print_what() << endl;
+                    this_thread::sleep_for(5s);
+                }
                 break;
             case 'q' :
                 print_board(gameBoard);
@@ -150,7 +156,8 @@ int main() {
                 stop = 1;
                 break;
             case 'n' :
-                factory->generateNewTetromino(0, pair<int, int>(6,6), 0, 0);
+                factory->generateNewTetromino(1, pair<int, int>(3, 2), 0, 1);
+                //factory->generateNewTetromino(0, pair<int, int>(6,6), 0, 0);
                 factory->getCurrentTetromino().drawTetromino(gameBoard);
                 break;
             //Normal input if nothing pressed
@@ -165,9 +172,9 @@ int main() {
         try {
             if(dropdownCounter == game_constants::falltime_factor) {
                 dropdownCounter = 0;
-                factory->getCurrentTetromino().moveDown(gameBoard);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
-                print_board(gameBoard);
+                //factory->getCurrentTetromino().moveDown(gameBoard);
+                //factory->getCurrentTetromino().drawTetromino(gameBoard);
+                //print_board(gameBoard);
             }
         } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
             //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);

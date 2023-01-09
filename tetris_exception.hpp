@@ -30,4 +30,10 @@ class Game_Over : public Tetris_Exception {
         Game_Over(std::string msg);
 };
 
+class Tetris_Rotation_Bounds : public Tetris_Exception {
+    public :
+        Tetris_Rotation_Bounds();
+        Tetris_Rotation_Bounds(std::string msg);
+};
+
 #endif

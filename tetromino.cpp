@@ -139,14 +139,38 @@ bool tetromino::checkRotation(char (&board)[game_constants::board_width][game_co
             if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock && board[this->getX() + x][this->getY() + y] != this->getSymbol()) return false;
         }
     }*/
+    tetromino tempTet = *this;
+
+    tempTet.rotate();
+
+    //cout << *this << "\n" << tempTet << endl;
+
+    //works kind of 
+    for(int y = 0; y < tempTet.shape.size(); y++) {
+        for(int x = 0; x < tempTet.shape[y].size(); x++) {
+            //If Block not empty check further
+            if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock) {
+            //cout << board[this->getX() + x][this->getY() + y] << " --- " << !this->shape[y][x] << endl;
+            if(y >= this->shape.size() || x >= this->shape[y].size()) throw(Tetris_Rotation_Bounds());
+                if(((y >= this->width) || (x >= this->height)) || (this->getX() + tempTet.width > game_constants::board_width) || !this->shape[y][x]) {
+                    cout << "returnedHere" << endl;
+                    return false;
+                }
+            }
+        }
+    }
+    
+    //Works
+/*
+    //Check every Element in rotated Shape -> switching width and height as rotated
     for(int y = 0; y < this->width; y++) {
-        cout << "Y:" << y <<  "Width " << this->width << endl;
+        //cout << "Y:" << y <<  "Width " << this->width << endl;
         for(int x = 0; x < this->height; x++) {
-            cout << "X:" << x << endl;
-            cout << board[this->getX() + x][this->getY()+y] << endl;
+            //cout << "X:" << x << endl;
             if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock && board[this->getX() + x][this->getY() + y] != this->getSymbol()) return false;
         }
     }
+*/
     return true;
 }
 
@@ -179,6 +203,26 @@ int tetromino::getX() {
 
 int tetromino::getY() {
     return this->top_point.second;
+}
+
+int tetromino::getHeight() {
+    return this->height;
+}
+
+int tetromino::getWidth() {
+    return this->width;
+}
+
+int tetromino::getSingleLineWidth(int line) {
+    return this->shape[line].size();
+}
+
+bool tetromino::checkShape(int x, int y) {
+    if(y < this->getWidth() && x < this->getSingleLineWidth(y)) {
+        return shape[y][x];
+    }
+    throw(Tetris_Exception("Out Of Bounds in CheckShape!!"));
+    return false;
 }
 
 void tetromino::drawTetromino(char (&board)[game_constants::board_width][game_constants::board_height], bool clear) {
