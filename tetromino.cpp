@@ -134,26 +134,16 @@ std::vector<std::vector<bool>> transposeVector(const std::vector<std::vector<boo
 }
 
 bool tetromino::checkRotation(char (&board)[game_constants::board_width][game_constants::board_height]) {
-    /*for(int y = 0; y < this->height; y++) {
-        for(int x = 0; x < this->width; x++) {
-            if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock && board[this->getX() + x][this->getY() + y] != this->getSymbol()) return false;
-        }
-    }*/
-    tetromino tempTet = *this;
-
-    tempTet.rotate();
-
-    //cout << *this << "\n" << tempTet << endl;
-
-    //works kind of 
-    for(int y = 0; y < tempTet.shape.size(); y++) {
-        for(int x = 0; x < tempTet.shape[y].size(); x++) {
+    //Iterate over every field of the new rotated Tetromino -> swaped y and x (width and height)
+    for(int y = 0; y < this->width; y++) {
+        for(int x = 0; x < this->height; x++) {
             //If Block not empty check further
             if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock) {
-            //cout << board[this->getX() + x][this->getY() + y] << " --- " << !this->shape[y][x] << endl;
-            if(y >= this->shape.size() || x >= this->shape[y].size()) throw(Tetris_Rotation_Bounds());
-                if(((y >= this->width) || (x >= this->height)) || (this->getX() + tempTet.width > game_constants::board_width) || !this->shape[y][x]) {
-                    cout << "returnedHere" << endl;
+                //If "OutOfBounds for the Check" if is exited early -> no out of Bounds because Short-Circuit Evaluation
+                if(y < this->shape.size() && x < this->shape[y].size() && this->shape[y][x]) {
+
+                } else {
+                    //Return "False" as in no rotation allowed
                     return false;
                 }
             }
