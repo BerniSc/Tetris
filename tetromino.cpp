@@ -1,46 +1,63 @@
 #include "tetromino.hpp"
 
-using std::cout;
-using std::endl;
-
-tetromino::tetromino(const char block_symbol, const std::pair<int, int> start_point, const int start_rotation, int shape_id) : block_symbol(block_symbol), top_point(start_point) {
+/*********************************************************************************
+*   @brief Constructor for Tetromino
+*   @param[in] block_symbol int saying which in which symbol the Tetromino will be drawn -> possibilities int game_constants -> input not checked
+*   @param[in] start_point start point of the Tetromino with first value x and second value y
+*   @param[in] start_rotation start rotation of the Tetromino
+*   @param[in] shape_id int saying which Tetromino will be drawn
+*********************************************************************************/
+tetromino::tetromino(const int block_symbol, const std::pair<int, int> start_point, const int start_rotation, const int shape_id) : block_symbol(game_constants::tetromino_blocks[block_symbol]), top_point(start_point) {
     tetromino::shape = tetromino_shapes::lookup_table_shapes.at(shape_id);
+    //rotating current tetromino until it has the desired rotation
     for(int i = 0; i < start_rotation; i++) this->rotate();
+    //Set Bounds of the rotated Tetromino
     this->setBounds();
 };
 
-bool tetromino::checkLeft(char (&board)[game_constants::board_width][game_constants::board_height]) {
+/*********************************************************************************
+*   @brief checks wheter moving the Tetromino left is allowed
+*   @param[in] board Current GameBoard
+*   @return bool -> true means allowed, false means wrong
+*********************************************************************************/
+bool tetromino::checkLeft(const char (&board)[game_constants::board_width][game_constants::board_height]) {
+    //Return instantly if already at 0
     if((this->getX() <= 0)) return false;
-    //std::cout << "Second" << std::endl;
+    //Iterate over every element in current shape
     for(int y = 0; y < this->height; y++) {
-        //std::cout << y << std::endl;
         for(int x = 0; x < this->shape[y].size(); x++) {
-            //std::cout << "Breaking at" << x << "|" << y << std::endl;
-            //Changed x and y
+            //if current element is actual part of tetromino proceed
             if(this->shape[y][x]) {
-            //if(this->shape[y][x]) {
-                //std::cout << board[this->getX() + x - 1][this->getY() + y] << std::endl;
-                //if(board[this->getX() + x - 1][this->getY() + y] != game_constants::empty_boardblock) return false;
-                //cout << (board[this->getX() + x - 1][this->getY() + y] != game_constants::empty_boardblock && board[this->getX() + x - 1][this->getY() + y] != this->getSymbol()) << endl;
-                if(board[this->getX() + x - 1][this->getY() + y] != game_constants::empty_boardblock && board[this->getX() + x - 1][this->getY() + y] != this->getSymbol()) {
-                    cout << board[this->getX() + x - 1][this->getY() + y] << endl;
-                    return false;
-                }
+                //If element left of first actual element in row is not clear return false
+                // && board[this->getX() + x - 1][this->getY() + y] != this->getSymbol()
+                if(board[this->getX() + x - 1][this->getY() + y] != game_constants::empty_boardblock) return false;
+                //break as element is not relevant anymore
                 break;
             }
         }
     }
+    //return true as standard
     return true;
 }
 
+/*********************************************************************************
+*   @brief Function for moving the current Tetromino left
+*   @param[in] board Current GameBoard
+*********************************************************************************/
 void tetromino::moveLeft(char (&board)[game_constants::board_width][game_constants::board_height]) {
     if(checkLeft(board)) {
+        //Clear current tetromino from Board
         drawTetromino(board, true);
         this->top_point.first--; 
     }
 }
 
-bool tetromino::checkRight(char (&board)[game_constants::board_width][game_constants::board_height]) {
+/*********************************************************************************
+*   @brief checks wheter moving the Tetromino right is allowed
+*   @param[in] board Current GameBoard
+*   @return bool -> true means allowed, false means wrong
+*********************************************************************************/
+bool tetromino::checkRight(const char (&board)[game_constants::board_width][game_constants::board_height]) {
     //Check if Bounds are reached
     if(((this->getX() + this->width) >= game_constants::board_width)) return false;
     //Start in Top Row
@@ -48,8 +65,6 @@ bool tetromino::checkRight(char (&board)[game_constants::board_width][game_const
         //Start with far right element
         for(int x = this->shape[y].size()-1; x >= 0; x--) {
             //If Element is in fact solid check if movement allowed and break from row -> rest irrelevant
-            //if(this->shape[y][x]) {
-            //Changed x and y
             if(this->shape[y][x]) {
                 //If Element to the right of solid solid as well, then return false
                 if(board[this->getX() + x + 1][this->getY() + y] != game_constants::empty_boardblock) return false;
@@ -61,41 +76,32 @@ bool tetromino::checkRight(char (&board)[game_constants::board_width][game_const
     return true;
 }
 
+/*********************************************************************************
+*   @brief Function for moving the current Tetromino right
+*   @param[in] board Current GameBoard
+*********************************************************************************/
 void tetromino::moveRight(char (&board)[game_constants::board_width][game_constants::board_height]) {
     if(checkRight(board)) {
+        //Clear current tetromino from Board
         drawTetromino(board, true);
         this->top_point.first++; 
     }
 }
 
-bool tetromino::checkDown(char (&board)[game_constants::board_width][game_constants::board_height]) {
+/*********************************************************************************
+*   @brief checks wheter moving the Tetromino down is allowed
+*   @param[in] board Current GameBoard
+*   @return bool -> true means allowed, false means wrong
+*********************************************************************************/
+bool tetromino::checkDown(const char (&board)[game_constants::board_width][game_constants::board_height]) {
+    //Instantly exits if already at bottom
     if(((this->getY() + this->height) >= game_constants::board_height)) return false;
-    //std::cout << "Second" << std::endl;
-    /*for(int y = this->height - 1; y >= 0; y--) {
-        //std::cout << y << std::endl;
-        for(int x = 0; x < this->shape[y].size(); x++) {
-            if(this->shape[y][x] && ((this->getY() + this->height) < game_constants::board_height)) {
-                std::cout << (board[this->getX() + x][this->getY() + y + 1] != game_constants::empty_boardblock)  << board[this->getX() + x][this->getY() + y + 1] << std::endl;
-                if(board[this->getX() + x][this->getY() + y + 1] != game_constants::empty_boardblock) return false;
-                break;
-            }
-        }
-    }*/
-    /*
-    for(int x = 0; x < this->shape[this->height - 1].size(); x++) {
-        if(shape[this->height - 1][x] && ((this->getY() + this->height) < game_constants::board_height)) {
-            if(board[this->getX() + x][this->getY() + this->height] != game_constants::empty_boardblock) return false;
-        }
-    }
-    */
-   //cout << *this << endl;
+    //Iterate over every element -> start with bottom as bottom's relevant for moving down
     for(int x = 0; x < this->width; x++) {
         for(int y = this->height - 1; y >= 0; y--) {
-            //cout << "X=" << x << "|" << this->shape[y].size() << "  " << "Y=" << y << endl;
-            //changed x and y
-            //if(this->width >= shape[y].size()) break;
-
+            //If Bottom Element actual element procees
             if(this->shape[y][x]) {
+                //If Block below not free return false, otherwise break;
                 if(board[this->getX() + x][this->getY() + y + 1] != game_constants::empty_boardblock) return false;
                 break;
             }
@@ -104,20 +110,36 @@ bool tetromino::checkDown(char (&board)[game_constants::board_width][game_consta
     return true;
 }
 
+/*********************************************************************************
+*   @brief Function for moving the current Tetromino down
+*   @param[in] board Current GameBoard
+*********************************************************************************/
 void tetromino::moveDown(char (&board)[game_constants::board_width][game_constants::board_height]) {
     if(checkDown(board)) {
+        //Clear current tetromino from Board
         drawTetromino(board, true);
         this->top_point.second++; 
     } else {
+        //Throw TetrominoStuck Exception for signaling generation of new Tetromino to Controller
         throw Tetromino_Stuck();
     }
 }
 
+/*********************************************************************************
+*   @brief Function for Debug Purposes -> completley unchecked
+*   @param[in] board Current GameBoard
+*********************************************************************************/
 void tetromino::moveUpDebug(char (&board)[game_constants::board_width][game_constants::board_height]) {
+    //Clear current tetromino from Board
     drawTetromino(board, true);
     this->top_point.second--; 
 }
 
+/*********************************************************************************
+*   @brief Function to transpose and return a two-dim vector of bool
+*   @param[in] shape Shape-Vector to transpose
+*   @return transposed two-dim vector
+*********************************************************************************/
 std::vector<std::vector<bool>> transposeVector(const std::vector<std::vector<bool>> &shape) {
     int rows = shape.size();
     int cols = shape[0].size();
@@ -133,6 +155,11 @@ std::vector<std::vector<bool>> transposeVector(const std::vector<std::vector<boo
     return transposedShape;
 }
 
+/*********************************************************************************
+*   @brief checks wheter rotating the tetromino is allowed
+*   @param[in] board Current GameBoard
+*   @return bool -> true means allowed, false means wrong
+*********************************************************************************/
 bool tetromino::checkRotation(char (&board)[game_constants::board_width][game_constants::board_height]) {
     //Iterate over every field of the new rotated Tetromino -> swaped y and x (width and height)
     for(int y = 0; y < this->width; y++) {
@@ -141,7 +168,7 @@ bool tetromino::checkRotation(char (&board)[game_constants::board_width][game_co
             if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock) {
                 //If "OutOfBounds for the Check" if is exited early -> no out of Bounds because Short-Circuit Evaluation
                 if(y < this->shape.size() && x < this->shape[y].size() && this->shape[y][x]) {
-
+                    //Needed for Short-Cicuit Evaluation
                 } else {
                     //Return "False" as in no rotation allowed
                     return false;
@@ -149,21 +176,12 @@ bool tetromino::checkRotation(char (&board)[game_constants::board_width][game_co
             }
         }
     }
-    
-    //Works
-/*
-    //Check every Element in rotated Shape -> switching width and height as rotated
-    for(int y = 0; y < this->width; y++) {
-        //cout << "Y:" << y <<  "Width " << this->width << endl;
-        for(int x = 0; x < this->height; x++) {
-            //cout << "X:" << x << endl;
-            if(board[this->getX() + x][this->getY()+y] != game_constants::empty_boardblock && board[this->getX() + x][this->getY() + y] != this->getSymbol()) return false;
-        }
-    }
-*/
     return true;
 }
 
+/*********************************************************************************
+*   @brief Rotate current tetromino without checking if rotation allowed -> needed for spawning tetromino
+*********************************************************************************/
 void tetromino::rotate() {
     //Trying to transpose the vector
     std::vector<std::vector<bool>> transposedShape = transposeVector(this->shape);
@@ -172,10 +190,16 @@ void tetromino::rotate() {
         //Reversing every row of transposed vector using std::reverse of algortihm
         std::reverse(row.begin(), row.end());
     }
+    //Assigning rotated Shape to current Shape
     this->shape = transposedShape;
+    //Call SetBounds to set new Bounds
     this->setBounds();
 }
 
+/*********************************************************************************
+*   @brief Function for rotating the current tetromino, but checked wheter rotation is allowed 
+*   @param[in] board Current GameBoard
+*********************************************************************************/
 void tetromino::rotateChecked(char (&board)[game_constants::board_width][game_constants::board_height]) {
     if(checkRotation(board)) {
         this->drawTetromino(board, true);
@@ -183,57 +207,86 @@ void tetromino::rotateChecked(char (&board)[game_constants::board_width][game_co
     }
 }
 
-char tetromino::getSymbol() {
+/*********************************************************************************
+*   @brief Getter Function for Symbol of current Tetromino
+*   @return Symbol of Current Tetromino
+*********************************************************************************/
+char tetromino::getSymbol() const {
     return this->block_symbol;
 }
 
-int tetromino::getX() {
+/*********************************************************************************
+*   @brief Getter Function for X Position of current Tetromino
+*   @return X Position of Current Tetromino (Upper left point)
+*********************************************************************************/
+int tetromino::getX() const {
     return this->top_point.first;
 }
 
-int tetromino::getY() {
+/*********************************************************************************
+*   @brief Getter Function for Y Position of current Tetromino
+*   @return Y Position of Current Tetromino (Upper left point)
+*********************************************************************************/
+int tetromino::getY() const {
     return this->top_point.second;
 }
 
-int tetromino::getHeight() {
+/*********************************************************************************
+*   @brief Getter Function for Height of current Tetromino
+*   @return Height of Current Tetromino (max Height)
+*********************************************************************************/
+int tetromino::getHeight() const {
     return this->height;
 }
 
-int tetromino::getWidth() {
+/*********************************************************************************
+*   @brief Getter Function for Width of current Tetromino
+*   @return Width of Current Tetromino (max Width)
+*********************************************************************************/
+int tetromino::getWidth() const {
     return this->width;
 }
 
-int tetromino::getSingleLineWidth(int line) {
+/*********************************************************************************
+*   @brief Getter Function for Width of current Tetromino in specific line
+*   @param[in] line index of Line for which width is wanted 
+*   @return Width of Current Tetromino in specific line
+*********************************************************************************/
+int tetromino::getSingleLineWidth(const int line) const {
     return this->shape[line].size();
 }
 
-bool tetromino::checkShape(int x, int y) {
+/*********************************************************************************
+*   @brief Getter Function for special Point in Shape -> throws Tetris_Bounds if error
+*   @param[in] x x-coordinate of Point
+*   @param[in] y y-coordinate of Point
+*   @return bool of Point in Shape of current Tetromino
+*********************************************************************************/
+bool tetromino::checkShape(int x, int y) const {
     if(y < this->getWidth() && x < this->getSingleLineWidth(y)) {
         return shape[y][x];
     }
-    throw(Tetris_Exception("Out Of Bounds in CheckShape!!"));
+    throw(Tetris_Bounds)("In Check Shape a Bounds Exception has been thrown");
     return false;
 }
 
+/*********************************************************************************
+*   @brief Function to draw the current Tetromino -> also clear old Tetromino
+*   @param[in] board Current GameBoard
+*   @param[in] clear Flag wether the function should clear old or draw new -> normaly at false
+*********************************************************************************/
 void tetromino::drawTetromino(char (&board)[game_constants::board_width][game_constants::board_height], bool clear) {
-    //cout << *this << endl;
     for(int y = 0; y < this->shape.size(); y++) {
-        //cout << "hi ";
-        //cout << this->shape.size() << endl;
         for(int x = 0; x < this->shape[y].size(); x++) {
-            //cout << "ShapeSize" << this->shape[y].size() << endl;
-            //cout << x << "|" << y << endl;
-            //Changed from x y to y x
-            if(shape[y][x] && !clear) board[getX() + x][getY() + y] = getSymbol();
             if(shape[y][x] && clear) board[getX() + x][getY() + y] = game_constants::empty_boardblock;
+            if(shape[y][x] && !clear) board[getX() + x][getY() + y] = getSymbol();
         }
     }
 }
 
-//tetromino tetromino::operator=(const tetromino &other) {
-//    
-//}
-
+/*********************************************************************************
+*   @brief Overloaded function for printing Tetromino -> prints Shape
+*********************************************************************************/
 std::ostream& operator<<(std::ostream& os, const tetromino& t) {
     for(auto row : t.shape) {
         for(auto symbol : row) {
@@ -243,8 +296,3 @@ std::ostream& operator<<(std::ostream& os, const tetromino& t) {
     }
     return os;
 }
-
-
-        //tetromino_1::tetromino_1(const char block_symbol, const std::pair<int, int> start_point, const int current_rotation) : tetromino(block_symbol, start_point, current_rotation, tetromino_shapes::shape_1_0) {
-
-        //}

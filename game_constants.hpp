@@ -6,13 +6,11 @@
 
 namespace game_constants {
     constexpr inline int board_height = 10;
-    constexpr inline int board_width = 8;
+    constexpr inline int board_width = 10;
 
     constexpr inline char tetromino_blocks[] = {'#', 'O', '0', 'o', '@'};
 
     constexpr inline char empty_boardblock = '.';
-
-    //constexpr inline char falling_tetromino_block = '@';
 
     //Wait TIme is number of possible inputs during one "Tick" -> one Tick is Wait Time times factor
     //Standard is 250, 10

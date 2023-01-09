@@ -14,7 +14,7 @@
 
 #include "game_constants.hpp"
 #include "tetromino.hpp"
-#include "tetromino_factory.hpp"
+#include "tetromino_controller.hpp"
 
 void initialize_board(char (&board)[game_constants::board_width][game_constants::board_height]);
 

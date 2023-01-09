@@ -10,7 +10,7 @@
 #include "tetris_exception.hpp"
 
 class tetromino {
-    protected:
+    private:
         const char block_symbol;
         int width = 0, height = 0;
         std::pair<int, int> top_point;
@@ -18,11 +18,11 @@ class tetromino {
         std::vector<std::vector<bool>> shape;
 
     public:
-        tetromino(const char block_symbol, const std::pair<int, int> start_point, const int start_rotation, int shape_id);
+        explicit tetromino(const int block_symbol, const std::pair<int, int> start_point, const int start_rotation, const int shape_id);
 
-        bool checkLeft(char (&board)[game_constants::board_width][game_constants::board_height]);
-        bool checkRight(char (&board)[game_constants::board_width][game_constants::board_height]);
-        bool checkDown(char (&board)[game_constants::board_width][game_constants::board_height]);
+        bool checkLeft(const char (&board)[game_constants::board_width][game_constants::board_height]);
+        bool checkRight(const char (&board)[game_constants::board_width][game_constants::board_height]);
+        bool checkDown(const char (&board)[game_constants::board_width][game_constants::board_height]);
 
         void moveLeft(char (&board)[game_constants::board_width][game_constants::board_height]);
         void moveRight(char (&board)[game_constants::board_width][game_constants::board_height]);
@@ -36,16 +36,16 @@ class tetromino {
         void rotateChecked(char (&board)[game_constants::board_width][game_constants::board_height]);
 
 
-        char getSymbol();
+        char getSymbol() const;
         
-        int getX();
-        int getY();
+        int getX() const;
+        int getY() const;
 
-        int getHeight();
-        int getWidth();
-        int getSingleLineWidth(int line);
+        int getHeight() const;
+        int getWidth() const;
+        int getSingleLineWidth(int line) const;
 
-        bool checkShape(int x, int y);
+        bool checkShape(int x, int y) const;
 
         void drawTetromino(char (&board)[game_constants::board_width][game_constants::board_height], bool clear = false);
 
@@ -58,21 +58,6 @@ class tetromino {
         }
 
         friend std::ostream& operator<<(std::ostream& os, const tetromino& t);
-        tetromino operator=(const tetromino &other);
 };
-
-/*class tetromino_1 : public tetromino {
-    private:
-
-    public: 
-        tetromino_1(const char block_symbol, const std::pair<int, int> start_point, const int current_rotation);
-
-        void setBounds() {
-            tetromino::height = shape.size() - 1;
-            for(int i = 0; i < tetromino::shape.size(); i++) {
-                if(tetromino::shape[i].size() > tetromino::width) width = tetromino::shape[i].size();
-            }
-        }
-};*/
 
 #endif

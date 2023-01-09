@@ -32,10 +32,10 @@ Game_Over::Game_Over(std::string msg) : Tetris_Exception(msg) {
     
 }
 
-Tetris_Rotation_Bounds::Tetris_Rotation_Bounds() : Tetris_Exception("A OutOfBounds has been called in the Rotation function!!") {
+Tetris_Bounds::Tetris_Bounds() : Tetris_Exception("A OutOfBounds has been called!!") {
 
 }
 
-Tetris_Rotation_Bounds::Tetris_Rotation_Bounds(std::string msg) : Tetris_Exception(msg) {
+Tetris_Bounds::Tetris_Bounds(std::string msg) : Tetris_Exception(msg) {
     
 }

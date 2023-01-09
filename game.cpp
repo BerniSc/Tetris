@@ -6,7 +6,7 @@
 #include <mutex>
 
 #include "tetromino.hpp"
-#include "tetromino_factory.hpp"
+#include "tetromino_controller.hpp"
 #include "game_constants.hpp"
 #include "utility_tetris.hpp"
 #include "tetris_exception.hpp"
@@ -85,10 +85,11 @@ void waitThreadCallback(const std::chrono::milliseconds &waitTime) {
 int main() {
     initialize_board(gameBoard);
 
-    unique_ptr<tetromino_factory> factory(new tetromino_factory(gameBoard));
+    unique_ptr<tetromino_controller> controller(new tetromino_controller(gameBoard));
     
-    factory->generateNewTetromino(1, pair<int, int>(3, 2), 0, 1);
-    factory->getCurrentTetromino().drawTetromino(gameBoard);
+    //controller->generateNewTetromino(1, pair<int, int>(3, 2), 0, 1);
+    controller->generateNewRandomTetromino();
+    controller->getCurrentTetromino().drawTetromino(gameBoard);
     print_board(gameBoard);
 
     //starting thread for Inputs;
@@ -106,46 +107,46 @@ int main() {
 
         switch(inputDummy) {
             case 'a' :
-                factory->getCurrentTetromino().moveLeft(gameBoard);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
+                controller->getCurrentTetromino().moveLeft(gameBoard);
+                controller->getCurrentTetromino().drawTetromino(gameBoard);
                 print_board(gameBoard);
                 input = ' ';
                 break;
             case 'd' :
-                factory->getCurrentTetromino().moveRight(gameBoard);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
+                controller->getCurrentTetromino().moveRight(gameBoard);
+                controller->getCurrentTetromino().drawTetromino(gameBoard);
                 print_board(gameBoard);
                 input = ' ';
                 break;
             case 's' :
                 try {
-                    factory->getCurrentTetromino().moveDown(gameBoard);
-                    factory->getCurrentTetromino().drawTetromino(gameBoard);
+                    controller->getCurrentTetromino().moveDown(gameBoard);
+                    controller->getCurrentTetromino().drawTetromino(gameBoard);
                     print_board(gameBoard);
                     input = ' ';
                     break;
                 } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
-                    //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
+                    //controller->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
                     removeCompletedRows(gameBoard);
-                    factory->generateNewRandomTetromino();
-                    factory->getCurrentTetromino().drawTetromino(gameBoard);
+                    controller->generateNewRandomTetromino();
+                    controller->getCurrentTetromino().drawTetromino(gameBoard);
                     print_board(gameBoard);
                     break;
                 }
             case 'w' :
-                factory->getCurrentTetromino().moveUpDebug(gameBoard);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
+                controller->getCurrentTetromino().moveUpDebug(gameBoard);
+                controller->getCurrentTetromino().drawTetromino(gameBoard);
                 print_board(gameBoard);
                 input = ' ';
                 break;
             case 'r' :
                 try {
-                    factory->getCurrentTetromino().rotateChecked(gameBoard);
-                    factory->getCurrentTetromino().drawTetromino(gameBoard);
+                    controller->getCurrentTetromino().rotateChecked(gameBoard);
+                    controller->getCurrentTetromino().drawTetromino(gameBoard);
                     print_board(gameBoard);
                     input = ' ';
                     break;
-                } catch(Tetris_Rotation_Bounds &rotation_exp) {
+                } catch(Tetris_Bounds &rotation_exp) {
                     cout << rotation_exp.print_what() << endl;
                     this_thread::sleep_for(5s);
                 }
@@ -155,16 +156,12 @@ int main() {
                 cout << "Quitting..." << endl;
                 stop = 1;
                 break;
-            case 'n' :
-                factory->generateNewTetromino(1, pair<int, int>(3, 2), 0, 1);
-                //factory->generateNewTetromino(0, pair<int, int>(6,6), 0, 0);
-                factory->getCurrentTetromino().drawTetromino(gameBoard);
-                break;
             //Normal input if nothing pressed
             case ' ' :
                 break;
             default :
                 cout << "Wrong Input" << endl;
+                input = ' ';
                 break;
         }
         waitThread.join();
@@ -172,16 +169,16 @@ int main() {
         try {
             if(dropdownCounter == game_constants::falltime_factor) {
                 dropdownCounter = 0;
-                //factory->getCurrentTetromino().moveDown(gameBoard);
-                //factory->getCurrentTetromino().drawTetromino(gameBoard);
-                //print_board(gameBoard);
+                controller->getCurrentTetromino().moveDown(gameBoard);
+                controller->getCurrentTetromino().drawTetromino(gameBoard);
+                print_board(gameBoard);
             }
         } catch(const Tetromino_Stuck &tetromino_stuck_exp) {
-            //factory->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
+            //controller->generateNewTetromino(0, pair<int, int>(0,2), 0, 0);
             //ADD TRY FOR GAME OVER TODO
             removeCompletedRows(gameBoard);
-            factory->generateNewRandomTetromino();
-            factory->getCurrentTetromino().drawTetromino(gameBoard);
+            controller->generateNewRandomTetromino();
+            controller->getCurrentTetromino().drawTetromino(gameBoard);
             print_board(gameBoard);
             //cout << tetromino_stuck_exp.print_what();
             //this_thread::sleep_for(2s);
