@@ -19,7 +19,7 @@ Control:
   - 's' to move Tetromino down faster
   - 'q' to quit Game
   
-Plans for the Future:<br>Ci
+Plans for the Future:<br>
 &emsp; Remove Debug Features<br>
 &emsp; Calculating Score -> Currently only number of Cleared Rows is collected<br>
 &emsp; Actually implement Game-Over Handling -> Currently game just "crashes" and exits (Adding Catch)<br>
