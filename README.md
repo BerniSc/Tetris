@@ -1,7 +1,7 @@
 # Tetris
 
-A console Port of Tetris for Linux based Consoles. The game is best played by increasing Font Size in the Console using 'Strg' + '+'
-Variables for changing the gameplay are collected in "game_constants.hpp". Here it is possible to for example change the Symbols in which the Tetrominos are drawn.
+A console Port of Tetris for Linux based Consoles. The game is best played by increasing Font Size in the Console using 'Strg' + '+'<br>
+Variables for changing the gameplay are collected in "game_constants.hpp". Here it is possible to for example change the Symbols in which the Tetrominos are drawn.<br>
 It is also possible to add own Tetromino Shapes, speed up the game or change the Size of the Board.
 
 (For Adding own Tetromino Shapes and 'Colors' the Hard-Coded Random Values in Tetromino-Controller have to be adapted)
